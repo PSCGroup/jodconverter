@@ -14,9 +14,9 @@ package org.artofsolving.jodconverter.office;
 
 import java.io.File;
 
+import org.artofsolving.jodconverter.process.LinuxProcessManager;
 import org.artofsolving.jodconverter.process.ProcessManager;
 import org.artofsolving.jodconverter.process.PureJavaProcessManager;
-import org.artofsolving.jodconverter.process.LinuxProcessManager;
 import org.artofsolving.jodconverter.process.SigarProcessManager;
 import org.artofsolving.jodconverter.util.PlatformUtils;
 
@@ -35,8 +35,11 @@ public class DefaultOfficeManagerConfiguration {
     private long taskExecutionTimeout = 120000L;  // 2 minutes
     private int maxTasksPerProcess = 200;
     private long retryTimeout = DEFAULT_RETRY_TIMEOUT;
+    
+    // KAK - 8/15 - allow host to be set/altered
+    private String host = "127.0.0.1";
 
-    private ProcessManager processManager = null;  // lazily initialised
+    private ProcessManager processManager = null;  // lazily initialized
 
     public DefaultOfficeManagerConfiguration setOfficeHome(String officeHome) throws NullPointerException, IllegalArgumentException {
         checkArgumentNotNull("officeHome", officeHome);
@@ -58,6 +61,12 @@ public class DefaultOfficeManagerConfiguration {
 
     public DefaultOfficeManagerConfiguration setPortNumber(int portNumber) {
         this.portNumbers = new int[] { portNumber };
+        return this;
+    }
+
+    // KAK - 8/15 - allow host to be set/altered
+    public DefaultOfficeManagerConfiguration setHost(String host) {
+        this.host = host;
         return this;
     }
 
@@ -174,7 +183,7 @@ public class DefaultOfficeManagerConfiguration {
         int numInstances = connectionProtocol == OfficeConnectionProtocol.PIPE ? pipeNames.length : portNumbers.length;
         UnoUrl[] unoUrls = new UnoUrl[numInstances];
         for (int i = 0; i < numInstances; i++) {
-            unoUrls[i] = (connectionProtocol == OfficeConnectionProtocol.PIPE) ? UnoUrl.pipe(pipeNames[i]) : UnoUrl.socket(portNumbers[i]);
+            unoUrls[i] = (connectionProtocol == OfficeConnectionProtocol.PIPE) ? UnoUrl.pipe(pipeNames[i]) : UnoUrl.socket(host, portNumbers[i]);
         }
         return new ProcessPoolOfficeManager(officeHome, unoUrls, runAsArgs, templateProfileDir, workDir, retryTimeout, taskQueueTimeout, taskExecutionTimeout, maxTasksPerProcess, processManager);
     }
