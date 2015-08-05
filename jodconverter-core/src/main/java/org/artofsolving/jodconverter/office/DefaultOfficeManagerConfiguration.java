@@ -37,7 +37,7 @@ public class DefaultOfficeManagerConfiguration {
     private long retryTimeout = DEFAULT_RETRY_TIMEOUT;
     
     // KAK - 8/15 - allow host to be set/altered
-    private String host = "127.0.0.1";
+    private String hostname = "127.0.0.1";
 
     private ProcessManager processManager = null;  // lazily initialized
 
@@ -66,7 +66,7 @@ public class DefaultOfficeManagerConfiguration {
 
     // KAK - 8/15 - allow host to be set/altered
     public DefaultOfficeManagerConfiguration setHost(String host) {
-        this.host = host;
+        this.hostname = host;
         return this;
     }
 
@@ -183,7 +183,7 @@ public class DefaultOfficeManagerConfiguration {
         int numInstances = connectionProtocol == OfficeConnectionProtocol.PIPE ? pipeNames.length : portNumbers.length;
         UnoUrl[] unoUrls = new UnoUrl[numInstances];
         for (int i = 0; i < numInstances; i++) {
-            unoUrls[i] = (connectionProtocol == OfficeConnectionProtocol.PIPE) ? UnoUrl.pipe(pipeNames[i]) : UnoUrl.socket(host, portNumbers[i]);
+            unoUrls[i] = (connectionProtocol == OfficeConnectionProtocol.PIPE) ? UnoUrl.pipe(pipeNames[i]) : UnoUrl.socket(hostname, portNumbers[i]);
         }
         return new ProcessPoolOfficeManager(officeHome, unoUrls, runAsArgs, templateProfileDir, workDir, retryTimeout, taskQueueTimeout, taskExecutionTimeout, maxTasksPerProcess, processManager);
     }

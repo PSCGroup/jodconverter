@@ -42,8 +42,8 @@ class UnoUrl {
     }
 
     // KAK - 8/15 - allow host to be set/altered
-    public static UnoUrl socket(String host, int port) {
-        String socketString = "socket,host=" + host + ",port=" + port;
+    public static UnoUrl socket(String hostname, int port) {
+        String socketString = "socket,host=" + hostname + ",port=" + port;
         return new UnoUrl(socketString, socketString + ",tcpNoDelay=1");
     }
 
